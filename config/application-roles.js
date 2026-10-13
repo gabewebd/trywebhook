@@ -3,14 +3,14 @@
    One entry per role. This is the single place to look up a role's slug,
    page path, Netlify form name and future webhook.
 
-   - Loaded in the browser as window.DGS_ROLES (used by ../js/application.js).
+   - Loaded in the browser as window.DGS_ROLES (used by js/application.js).
    - Can also be require()'d from Node (e.g. a Netlify Function) to route
-     submissions by form name. See ../README.md, "Connecting webhooks".
+     submissions by form name. See README.md, "GHL webhook".
 
    DO NOT rename `netlifyFormName` values. They must match the <form name="…">
    in each page exactly, and they identify the form in the Netlify dashboard.
 
-   WEBHOOKS: when a role has `webhook.endpoint`, ../js/application.js posts a
+   WEBHOOKS: when a role has `webhook.endpoint`, js/application.js posts a
    JSON copy of the application to it AFTER Netlify Forms accepts the
    submission. Leave `endpoint: null` to submit to Netlify only.
    A GHL inbound-webhook URL is not a secret key, but anyone who reads this
@@ -42,7 +42,7 @@
     {
       slug: 'architectural-bim-modeler',
       title: 'Architectural BIM Modeler',
-      path: '/careers/applications/architectural-bim-modeler.html',
+      path: '/architectural-bim-modeler',
       originalUrl: 'https://archibim.netlify.app',
       netlifyFormName: 'architectural-bim-modeler-application',
       portfolioRequired: true,
@@ -52,7 +52,7 @@
     {
       slug: 'mechanical-electrical-bim-modeler',
       title: 'Mechanical and Electrical BIM Modeler',
-      path: '/careers/applications/mechanical-electrical-bim-modeler.html',
+      path: '/mechanical-electrical-bim-modeler',
       originalUrl: 'https://mechbim.netlify.app',
       netlifyFormName: 'me-bim-modeler-application',
       portfolioRequired: true,
@@ -62,7 +62,7 @@
     {
       slug: 'structural-bim-modeler',
       title: 'Structural BIM Modeler',
-      path: '/careers/applications/structural-bim-modeler.html',
+      path: '/structural-bim-modeler',
       originalUrl: 'https://strucbim.netlify.app',
       netlifyFormName: 'structural-bim-modeler-application',
       portfolioRequired: true,
@@ -72,7 +72,7 @@
     {
       slug: 'facade-architectural-skilled-drafter',
       title: 'Façade & Architectural Skilled Drafter',
-      path: '/careers/applications/facade-architectural-skilled-drafter.html',
+      path: '/facade-architectural-skilled-drafter',
       originalUrl: 'https://dgsrecruitment.netlify.app',
       netlifyFormName: 'skilled-drafter-application',
       portfolioRequired: true,
@@ -86,7 +86,7 @@
     {
       slug: 'senior-it-support',
       title: 'Senior IT Support',
-      path: '/careers/applications/senior-it-support.html',
+      path: '/senior-it-support',
       originalUrl: 'https://senioritsupport.netlify.app',
       netlifyFormName: 'senior-it-support-application',
       fileLimitsMB: { resume: 5 },
@@ -96,7 +96,7 @@
     {
       slug: 'microsoft-365-teams-specialist',
       title: 'Microsoft 365 / Teams Specialist (Project-Based)',
-      path: '/careers/applications/microsoft-365-teams-specialist.html',
+      path: '/microsoft-365-teams-specialist',
       originalUrl: 'https://specialist365.netlify.app',
       netlifyFormName: 'm365-teams-specialist-application',
       fileLimitsMB: { resume: 5 },
@@ -107,7 +107,7 @@
     {
       slug: 'accounts-administration-officer',
       title: 'Accounts & Administration Officer',
-      path: '/careers/applications/accounts-administration-officer.html',
+      path: '/accounts-administration-officer',
       originalUrl: 'https://acctsandadminofficer.netlify.app',
       netlifyFormName: 'accounts-admin-officer-application',
       webhook: { status: 'testing', endpoint: GHL_TEST_WEBHOOK }

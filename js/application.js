@@ -2,7 +2,7 @@
    Digital GrowthScale — shared application form behaviour
    Ported from the inline script each original role page carried. Role
    differences (file limits, portfolio rule, messages) come from
-   ../config/application-roles.js, keyed by <body data-role="…">.
+   config/application-roles.js, keyed by <body data-role="…">.
 
    Submission goes to Netlify Forms exactly as before (multipart POST with
    the hidden form-name field). If the role has `webhook.endpoint` in the
@@ -105,9 +105,10 @@
   function postNetlify(){
     var sid=document.getElementById('submissionId');
     if(sid&&!sid.value)sid.value=newId();
-    // Post to this page's own path. Netlify Forms accepts the POST on any static page;
-    // the form is identified by the hidden "form-name" field, not by the URL.
-    return fetch(location.pathname,{method:'POST',body:new FormData(form)})
+    // Post to the site root, as in Netlify's AJAX example. "/" is a static page (index.html),
+    // so no redirect or clean-URL rule can intercept the POST. Netlify identifies the form
+    // by the hidden "form-name" field, not by the URL.
+    return fetch('/',{method:'POST',body:new FormData(form)})
       .then(function(r){
         if(!r.ok)throw new Error(r.status);
         netlifyDone=true;

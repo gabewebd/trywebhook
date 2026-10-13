@@ -1,6 +1,6 @@
 /* ==========================================================================
    Digital GrowthScale — shared application page styles
-   Used by every page in careers/applications/<role>/index.html.
+   Used by every role page (<slug>.html at the site root).
    Extracted verbatim from the original role pages (*.netlify.app); the
    per-role differences live in the ROLE OVERRIDES section at the bottom,
    scoped by <body data-role="…">.

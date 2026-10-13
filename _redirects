@@ -1,5 +1,8 @@
 # Netlify redirects. Netlify reads this file from the publish directory (project root).
-# The Careers page moved from /careers.html to /careers/ (careers/index.html).
-/careers.html            /careers/   301
-# The applications folder has no index page of its own. Send visitors to the listing.
-/careers/applications    /careers/   302
+# The site root is the Careers page (index.html). Each role is /<slug> (served from <slug>.html).
+
+# Old Careers URLs
+/careers.html                   /    301
+/careers/applications/*         /:splat    301
+/careers/*                      /    301
+/careers                        /    301
