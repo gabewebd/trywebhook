@@ -8,7 +8,7 @@ Untouched snapshots of every original are in `/.originals/`.
 
 ```
 index.html                     Careers listing — the site root (/)
-<slug>.html                    one page per role, served at /<slug>
+applications/<slug>.html       one page per role, served at /<slug> (rewrite in _redirects)
 css/careers.css                Careers page styles
 css/application.css            shared role-page styles + scoped per-role overrides at the bottom
 js/careers.js                  Careers page filter
@@ -16,12 +16,12 @@ js/application.js              shared validation, upload, submit and webhook log
 config/application-roles.js    role → slug, title, Netlify form name, webhook
 assets/logo.png                shared logo (was inlined 16× as base64)
 email-templates/               applicant confirmation email (for GHL)
-_redirects                     old /careers/... URLs → new URLs
+_redirects                     /<slug> rewrites + old /careers/... URLs → new URLs
 ```
 
 ## Role map
 
-| File (served at `/<slug>`) | Job title | Netlify form name (do not rename) | Original URL |
+| File in `applications/` (served at `/<slug>`) | Job title | Netlify form name (do not rename) | Original URL |
 |---|---|---|---|
 | `architectural-bim-modeler.html` | Architectural BIM Modeler | `architectural-bim-modeler-application` | https://archibim.netlify.app |
 | `mechanical-electrical-bim-modeler.html` | Mechanical & Electrical BIM Modeler | `me-bim-modeler-application` | https://mechbim.netlify.app |
@@ -41,10 +41,13 @@ Each submission already carries the role: the hidden `form-name` (the form name)
 
 ## Adding or changing a role
 
-1. Copy a role `.html` file, rename it to the new slug, and edit the content and fields. Keep `id="appForm"` and the hidden `form-name` value equal to the form's `name`.
+1. Copy a role `.html` file in `applications/`, rename it to the new slug, and edit the content and fields. Keep `id="appForm"` and the hidden `form-name` value equal to the form's `name`.
 2. Set `<body data-role="<slug>">`.
 3. Add an entry to `config/application-roles.js`.
-4. Point the Careers card in `index.html` to `href="<slug>"`.
+4. Add a rewrite to `_redirects`: `/<slug>  /applications/<slug>.html  200`.
+5. Point the Careers card in `index.html` to `href="/<slug>"`.
+
+Role pages load shared files with root paths (`/css/…`, `/js/…`, `/config/…`, `/assets/…`), so they work at both `/<slug>` and `/applications/<slug>.html`.
 
 ## GHL webhook (testing)
 

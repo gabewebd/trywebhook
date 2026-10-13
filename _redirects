@@ -1,8 +1,24 @@
 # Netlify redirects. Netlify reads this file from the publish directory (project root).
-# The site root is the Careers page (index.html). Each role is /<slug> (served from <slug>.html).
+# The site root is the Careers page (index.html).
 
-# Old Careers URLs
-/careers.html                   /    301
-/careers/applications/*         /:splat    301
-/careers/*                      /    301
-/careers                        /    301
+# Role pages: files live in applications/, URLs stay clean (/<slug>).
+# Status 200 is a rewrite: Netlify serves the file but the address bar keeps /<slug>.
+/architectural-bim-modeler              /applications/architectural-bim-modeler.html              200
+/mechanical-electrical-bim-modeler      /applications/mechanical-electrical-bim-modeler.html      200
+/structural-bim-modeler                 /applications/structural-bim-modeler.html                 200
+/facade-architectural-skilled-drafter   /applications/facade-architectural-skilled-drafter.html   200
+/senior-it-support                      /applications/senior-it-support.html                      200
+/microsoft-365-teams-specialist         /applications/microsoft-365-teams-specialist.html         200
+/accounts-administration-officer        /applications/accounts-administration-officer.html        200
+
+# Old Careers URLs from the previous deploy → new URLs
+/careers/applications/architectural-bim-modeler.html             /architectural-bim-modeler             301
+/careers/applications/mechanical-electrical-bim-modeler.html     /mechanical-electrical-bim-modeler     301
+/careers/applications/structural-bim-modeler.html                /structural-bim-modeler                301
+/careers/applications/facade-architectural-skilled-drafter.html  /facade-architectural-skilled-drafter  301
+/careers/applications/senior-it-support.html                     /senior-it-support                     301
+/careers/applications/microsoft-365-teams-specialist.html        /microsoft-365-teams-specialist        301
+/careers/applications/accounts-administration-officer.html       /accounts-administration-officer       301
+/careers.html    /    301
+/careers/*       /    301
+/careers         /    301
