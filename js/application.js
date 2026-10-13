@@ -130,16 +130,23 @@
   // ticked values with ", ". Unticked or empty fields are sent as "" so the keys stay the same
   // on every submission. File inputs send the file's name, type and size only: the file itself
   // is stored by Netlify Forms, and this browser request cannot include or link to it.
+  //
+  // Two extra keys hold everything as readable text, for an AI screening step that needs
+  // only two merge fields, whatever the role's questions are:
+  //   applicant-answers  "Question: answer" per line, labels taken from the form
+  //   role-requirements  the role summary and job description cards from this page
   function buildPayload(){
-    var p={},groups={};
+    var p={},groups={},labels={};
     Array.prototype.forEach.call(form.elements,function(el){
       var n=el.name;
       if(!n||n==='bot-field'||el.type==='submit'||el.type==='button')return;
       var key=n.replace(/\[\]$/,'');
+      if(!(key in labels))labels[key]=el.type==='hidden'?null:questionFor(el,key);
       if(el.type==='file'){
         var f=el.files[0];
         p[key]=f?f.name:'';p[key+'-type']=f?(f.type||''):'';p[key+'-size-kb']=f?Math.round(f.size/1024):'';
       }else if(el.type==='checkbox'&&key!==n){
+        if(!(key in p))p[key]=''; // placeholder keeps the field's place in form order
         (groups[key]=groups[key]||[]);if(el.checked)groups[key].push(el.value);
       }else if(el.type==='checkbox'||el.type==='radio'){
         if(!(key in p))p[key]='';if(el.checked)p[key]=el.value;
@@ -148,10 +155,55 @@
       }
     });
     for(var g in groups)p[g]=groups[g].join(', ');
+
+    var lines=['Position: '+(p.position||'')];
+    for(var k in labels){
+      if(!labels[k])continue;
+      var v=p[k]===''?'(no answer)':p[k];
+      if(k in groups||!form.querySelector('[name="'+k+'"][type="file"]')){lines.push(labels[k]+': '+v);}
+      else{lines.push(labels[k]+': '+(p[k]?v+' (file stored in Netlify Forms; contents not included)':'(not provided)'));}
+    }
+    p['applicant-answers']=lines.join('\n');
+    p['role-requirements']=roleRequirements();
     p['role-slug']=slug;
     p['submitted-at']=new Date().toISOString();
     p['page-url']=location.origin+location.pathname;
     return p;
+  }
+
+  // Short names for the two consent boxes, whose labels are full sentences.
+  var QUESTION_NAMES={'privacy-consent':'Data privacy consent','talent-pool-consent':'Keep application on file for future openings'};
+
+  // The question text shown to the applicant, without the "*" and "(optional)" markers.
+  function questionFor(el,key){
+    if(QUESTION_NAMES[key])return QUESTION_NAMES[key];
+    var chips=el.closest('.chips'),lbl=null;
+    if(chips)lbl=chips.parentElement.querySelector(':scope > label');
+    else if(el.id)lbl=form.querySelector('label[for="'+el.id+'"]');
+    if(!lbl)lbl=el.closest('label');
+    return lbl?cleanText(lbl):key;
+  }
+  function cleanText(node){
+    var c=node.cloneNode(true);
+    Array.prototype.forEach.call(c.querySelectorAll('.req,.opt,input,select,textarea'),function(x){x.remove();});
+    return c.textContent.replace(/\s+/g,' ').trim().replace(/:$/,'');
+  }
+
+  // The role summary and job description cards ("Key responsibilities", "What we're looking for", ...).
+  var requirementsText=null;
+  function roleRequirements(){
+    if(requirementsText!==null)return requirementsText;
+    var jd=document.querySelector('.jd'),out=[];
+    if(jd){
+      var lead=jd.parentElement.querySelector('.lead');
+      if(lead)out.push('Role summary: '+cleanText(lead));
+      Array.prototype.forEach.call(jd.querySelectorAll('.card'),function(card){
+        var h=card.querySelector('h3');
+        if(h)out.push('',cleanText(h));
+        Array.prototype.forEach.call(card.querySelectorAll('li'),function(li){out.push('- '+cleanText(li));});
+      });
+    }
+    return (requirementsText=out.join('\n').trim());
   }
 
   function newId(){

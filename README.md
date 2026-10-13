@@ -61,6 +61,10 @@ How a submission works:
 
 Payload: one key per form field name (e.g. `first-name`, `position`, `years-bim`). Checkbox groups drop the `[]` suffix and join ticked values with ", ". Unticked or empty fields are sent as `""`. Added keys: `submission-id` (also stored in Netlify), `role-slug`, `submitted-at`, `page-url`, and for each file input `<name>-type` and `<name>-size-kb`. The honeypot is never sent, and entries where the honeypot is filled skip the webhook.
 
+For AI screening (e.g. a GHL GPT action), two more keys carry the whole application as text, so the prompt needs only two merge fields for every role:
+- `applicant-answers`: one `Question: answer` line per field, using the question text from the form (unanswered = `(no answer)`).
+- `role-requirements`: the role summary and job description cards ("Key responsibilities", "What we're looking for" / "Qualifications") read from the role page, so it stays in sync when the page is edited.
+
 Resumes: GHL receives the **file name, type and size only**. The file itself is stored in Netlify Forms. To find it, search the Netlify submission by `submission-id`. GHL cannot read the resume's contents from this payload.
 
 Limits of the browser-side approach:
