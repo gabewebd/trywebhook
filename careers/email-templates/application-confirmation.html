@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+<!--
+  Digital GrowthScale — Application confirmation email
+  Purpose: sent automatically to an applicant after their careers application is received.
+
+  Personalization fields (map these in the email platform; keep the syntax exactly):
+    {{inbound_webhook.first-name}}  applicant's first name   (form field "first-name")
+    {{inbound_webhook.position}}    job title applied for    (hidden form field "position")
+
+  External assets that must stay publicly reachable over HTTPS:
+    Logo:  https://raw.githubusercontent.com/gabewebd/trywebhook/main/careers/assets/logo.png  (502x110 PNG)
+           Once the site is live on Netlify, you can swap it for https://<your-site>/careers/assets/logo.png.
+           If images are blocked, the alt text "Digital GrowthScale" shows instead.
+    Font:  Poppins from Google Fonts (Apple Mail, iOS Mail, Outlook for Mac, Samsung Mail).
+           Gmail and Outlook for Windows fall back to Segoe UI / Helvetica / Arial.
+
+  Brand tokens (from careers/css/careers.css and careers/applications/css/application.css):
+    navy #1B2A57 · navy-light #24377A · navy-dark #121D40 · teal #3E9488 · teal-dark #2E7C71
+    teal-light #5FB3A6 · gold #F7C948 · paper #F5F7FA · line #DDE3EE · text #2B3A63 · muted #5E6B8C
+
+  Fallbacks: gradients have a solid navy fallback (bgcolor), plus a VML gradient for Outlook for Windows.
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="x-apple-disable-message-reformatting">
+<meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
+<meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">
+<title>Application received | Digital GrowthScale</title>
+<!--[if !mso]><!-->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<!--<![endif]-->
+<!--[if mso]>
+<noscript><xml><o:OfficeDocumentSettings><o:AllowPNG/><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
+<style>td,th,p,a,span,h1,h2,h3{font-family:'Segoe UI',Arial,sans-serif!important}</style>
+<![endif]-->
+<style>
+  body{margin:0;padding:0;width:100%!important;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
+  table{border-collapse:collapse}
+  img{border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic}
+  a[x-apple-data-detectors]{color:inherit!important;text-decoration:none!important}
+
+  /* Website hero: radial navy gradient + teal blueprint grid (clients that can't render this keep the inline linear gradient or solid navy) */
+  .hero{
+    background-image:
+      linear-gradient(rgba(95,179,166,.12) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(95,179,166,.12) 1px,transparent 1px),
+      linear-gradient(rgba(95,179,166,.05) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(95,179,166,.05) 1px,transparent 1px),
+      radial-gradient(ellipse at 60% 30%,#24377A 0%,#1B2A57 50%,#121D40 100%)!important;
+    background-size:100px 100px,100px 100px,20px 20px,20px 20px,100% 100%!important;
+  }
+  /* Website footer / "why" band: navy-dark with a fine teal grid */
+  .grid-dark{
+    background-image:
+      linear-gradient(rgba(95,179,166,.10) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(95,179,166,.10) 1px,transparent 1px)!important;
+    background-size:40px 40px,40px 40px!important;
+  }
+
+  @media only screen and (max-width:620px){
+    .container{width:100%!important}
+    .outer{padding:12px 8px 24px!important}
+    .px{padding-left:24px!important;padding-right:24px!important}
+    .hero-pad{padding-top:36px!important;padding-bottom:36px!important}
+    .h1-lead{font-size:20px!important;line-height:28px!important}
+    .h1-role{font-size:30px!important;line-height:36px!important}
+    .stack{display:block!important;width:100%!important}
+    .stack-gap{padding-top:12px!important;padding-left:0!important}
+    .hide-sm{display:none!important}
+  }
+</style>
+</head>
+<body style="margin:0;padding:0;background-color:#E9EEF6;">
+
+<!-- Preheader: shown in the inbox preview, hidden in the email body -->
+<div style="display:none;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;color:#E9EEF6;">
+  We've received your application for the {{inbound_webhook.position}} position.&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;
+</div>
+
+<!-- Page background: the website's apply-section gradient (paper to #E9EEF6) -->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#E9EEF6" style="background-color:#E9EEF6;background-image:linear-gradient(180deg,#F5F7FA 0%,#E9EEF6 100%);">
+  <tr>
+    <td align="center" class="outer" style="padding:36px 16px 48px;">
+
+      <!--[if mso]><table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" align="center"><tr><td><![endif]-->
+      <table role="presentation" class="container" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:600px;background-color:#FFFFFF;border-radius:22px;overflow:hidden;box-shadow:0 20px 50px rgba(27,42,87,.12);">
+
+        <!-- ===== Top bar: logo on white, like the website header ===== -->
+        <tr>
+          <td class="px" style="padding:22px 40px;border-bottom:1px solid #DDE3EE;background-color:#FFFFFF;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td valign="middle">
+                  <a href="https://digitalgrowthscale.com" target="_blank" style="text-decoration:none;">
+                    <img src="https://raw.githubusercontent.com/gabewebd/trywebhook/main/careers/assets/logo.png" width="182" height="40" alt="Digital GrowthScale" style="display:block;width:182px;max-width:182px;height:auto;font-family:'Poppins','Segoe UI',Helvetica,Arial,sans-serif;font-size:18px;font-weight:800;line-height:40px;color:#1B2A57;">
+                  </a>
+                </td>
+                <td valign="middle" align="right" class="hide-sm" style="font-family:'Poppins','Segoe UI',Helvetica,Arial,sans-serif;font-size:11px;line-height:16px;font-weight:700;letter-spacing:2.5px;color:#2E7C71;">CAREERS</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- ===== Hero: navy gradient + blueprint grid, gold pill, gold role title ===== -->
+        <tr>
+          <td class="hero" bgcolor="#1B2A57" style="background-color:#1B2A57;background-image:linear-gradient(135deg,#24377A 0%,#1B2A57 50%,#121D40 100%);">
+            <!--[if gte mso 9]>
+            <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:600px;mso-fit-shape-to-text:true;">
+              <v:fill type="gradient" color="#24377A" color2="#121D40" angle="135" />
+              <v:textbox inset="0,0,0,0" style="mso-fit-shape-to-text:true;">
+            <![endif]-->
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td class="px hero-pad" style="padding:48px 40px 46px;font-family:'Poppins','Segoe UI',Helvetica,Arial,sans-serif;">
+                  <!-- gold pill, as the website's "WE'RE HIRING" badge -->
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td bgcolor="#F7C948" style="background-color:#F7C948;border-radius:30px;padding:7px 16px;font-family:'Poppins','Segoe UI',Helvetica,Arial,sans-serif;font-size:11px;line-height:14px;font-weight:800;letter-spacing:2.5px;color:#1B2A57;white-space:nowrap;">
+                        <span style="color:#1B2A57;font-size:10px;">&#9679;</span>&nbsp;&nbsp;APPLICATION RECEIVED
+                      </td>
+                    </tr>
+                  </table>
+                  <h1 style="margin:22px 0 0 0;font-family:'Poppins','Segoe UI',Helvetica,Arial,sans-serif;font-weight:700;color:#FFFFFF;">
+                    <span class="h1-lead" style="display:block;font-size:24px;line-height:32px;font-weight:700;color:#FFFFFF;">Thank you for applying for</span>
+                    <span class="h1-role" style="display:block;margin-top:6px;font-size:36px;line-height:42px;font-weight:900;letter-spacing:-.5px;color:#F7C948;">{{inbound_webhook.position}}</span>
+                  </h1>
+                  <p style="margin:18px 0 0 0;max-width:460px;font-family:'Poppins','Segoe UI',Helvetica,Arial,sans-serif;font-size:16px;line-height:26px;color:#C9DDF0;">Your application is in. Here's a quick look at what happens next.</p>
+                </td>
+              </tr>
+            </table>
+            <!--[if gte mso 9]></v:textbox></v:rect><![endif]-->
+          </td>
+        </tr>
+
+        <!-- brand accent strip: gold to teal -->
+        <tr>
+          <td height="4" bgcolor="#F7C948" style="height:4px;line-height:4px;font-size:4px;background-color:#F7C948;background-image:linear-gradient(90deg,#F7C948 0%,#5FB3A6 55%,#3E9488 100%);">&nbsp;</td>
+        </tr>
+
+        <!-- ===== Body copy ===== -->
+        <tr>
+          <td class="px" style="padding:40px 40px 8px 40px;font-family:'Poppins','Segoe UI',Helvetica,Arial,sans-serif;font-size:16px;line-height:27px;color:#2B3A63;">
+            <p style="margin:0 0 18px 0;font-size:17px;font-weight:600;color:#1B2A57;">Hi {{inbound_webhook.first-name}},</p>
+            <p style="margin:0 0 18px 0;">Thank you for your interest in joining Digital GrowthScale and for taking the time to apply for the <strong style="font-weight:700;color:#1B2A57;">{{inbound_webhook.position}}</strong> position.</p>
+            <p style="margin:0;">We have successfully received your application, including your resume and your responses about your experience and location.</p>
+          </td>
+        </tr>
+
+        <!-- ===== What happens next: numbered steps, styled like the website's "How to apply" ===== -->
+        <tr>
+          <td class="px" style="padding:36px 40px 8px 40px;font-family:'Poppins','Segoe UI',Helvetica,Arial,sans-serif;">
+            <p style="margin:0 0 4px 0;font-size:12px;line-height:18px;font-weight:700;letter-spacing:3px;color:#2E7C71;">WHAT HAPPENS NEXT?</p>
+            <h2 style="margin:0 0 20px 0;font-size:24px;line-height:32px;font-weight:800;color:#1B2A57;">Your application from here</h2>
+
+            <!-- step 1 -->
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 14px 0;">
+              <tr>
+                <td bgcolor="#F5F7FA" style="background-color:#F5F7FA;border:1px solid #DDE3EE;border-left:4px solid #3E9488;border-radius:14px;padding:20px 22px;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td width="44" valign="top" style="width:44px;padding-right:16px;">
+                        <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+                          <td width="40" height="40" align="center" valign="middle" bgcolor="#1B2A57" style="width:40px;height:40px;border-radius:20px;background-color:#1B2A57;font-family:'Poppins','Segoe UI',Helvetica,Arial,sans-serif;font-size:16px;line-height:40px;font-weight:800;color:#F7C948;">1</td>
+                        </tr></table>
+                      </td>
+                      <td valign="top" style="font-family:'Poppins','Segoe UI',Helvetica,Arial,sans-serif;">
+                        <p style="margin:0 0 4px 0;font-size:17px;line-height:24px;font-weight:700;color:#1B2A57;">Application review</p>
+                        <p style="margin:0;font-size:15px;line-height:24px;color:#5E6B8C;">Our recruitment team will review your application against the requirements and priorities of the position. Review timelines vary by role and depend on the urgency of the opening and our current recruitment needs.</p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+
+            <!-- step 2 -->
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td bgcolor="#F5F7FA" style="background-color:#F5F7FA;border:1px solid #DDE3EE;border-left:4px solid #F7C948;border-radius:14px;padding:20px 22px;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td width="44" valign="top" style="width:44px;padding-right:16px;">
+                        <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+                          <td width="40" height="40" align="center" valign="middle" bgcolor="#1B2A57" style="width:40px;height:40px;border-radius:20px;background-color:#1B2A57;font-family:'Poppins','Segoe UI',Helvetica,Arial,sans-serif;font-size:16px;line-height:40px;font-weight:800;color:#F7C948;">2</td>
+                        </tr></table>
+                      </td>
+                      <td valign="top" style="font-family:'Poppins','Segoe UI',Helvetica,Arial,sans-serif;">
+                        <p style="margin:0 0 4px 0;font-size:17px;line-height:24px;font-weight:700;color:#1B2A57;">If there's a match</p>
+                        <p style="margin:0;font-size:15px;line-height:24px;color:#5E6B8C;">If your profile aligns with what we are looking for, our team will reach out by email or SMS to discuss the next steps.</p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- ===== Closing and sign-off ===== -->
+        <tr>
+          <td class="px" style="padding:34px 40px 44px 40px;font-family:'Poppins','Segoe UI',Helvetica,Arial,sans-serif;font-size:16px;line-height:27px;color:#2B3A63;">
+            <p style="margin:0 0 28px 0;">We genuinely appreciate your time and interest in building your career with Digital GrowthScale.</p>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td style="border-left:3px solid #F7C948;padding:2px 0 2px 16px;font-family:'Poppins','Segoe UI',Helvetica,Arial,sans-serif;">
+                  <p style="margin:0;font-size:15px;line-height:24px;color:#5E6B8C;">Best regards,</p>
+                  <p style="margin:0;font-size:17px;line-height:26px;font-weight:700;color:#1B2A57;">Digital GrowthScale Recruitment Team</p>
+                  <p style="margin:0;font-size:15px;line-height:24px;"><a href="https://digitalgrowthscale.com" target="_blank" style="color:#2E7C71;font-weight:600;text-decoration:none;">digitalgrowthscale.com</a></p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- ===== Footer: navy-dark with grid, white logo pill, like the website footer ===== -->
+        <tr>
+          <td class="px grid-dark" bgcolor="#121D40" style="background-color:#121D40;padding:34px 40px 30px;font-family:'Poppins','Segoe UI',Helvetica,Arial,sans-serif;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td class="stack" valign="middle" style="font-family:'Poppins','Segoe UI',Helvetica,Arial,sans-serif;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+                    <td bgcolor="#FFFFFF" style="background-color:#FFFFFF;border-radius:12px;padding:10px 16px;">
+                      <a href="https://digitalgrowthscale.com" target="_blank" style="text-decoration:none;">
+                        <img src="https://raw.githubusercontent.com/gabewebd/trywebhook/main/careers/assets/logo.png" width="137" height="30" alt="Digital GrowthScale" style="display:block;width:137px;max-width:137px;height:auto;font-family:'Poppins','Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:800;line-height:30px;color:#1B2A57;">
+                      </a>
+                    </td>
+                  </tr></table>
+                  <p style="margin:12px 0 0 0;font-size:13px;line-height:20px;color:#C2CFE6;">Human talent. Intelligent automation. Scalable growth.</p>
+                </td>
+                <td class="stack stack-gap" valign="middle" align="left" width="190" style="width:190px;padding-left:20px;font-family:'Poppins','Segoe UI',Helvetica,Arial,sans-serif;">
+                  <p style="margin:0 0 4px 0;font-size:11px;line-height:16px;font-weight:700;letter-spacing:2px;color:#FFFFFF;">VISIT US</p>
+                  <p style="margin:0;font-size:14px;line-height:22px;"><a href="https://digitalgrowthscale.com" target="_blank" style="color:#F7C948;font-weight:700;text-decoration:none;">digitalgrowthscale.com</a></p>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" style="padding-top:22px;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+                    <td style="border-top:1px solid #2A3866;padding-top:16px;font-family:'Poppins','Segoe UI',Helvetica,Arial,sans-serif;font-size:12px;line-height:18px;color:#8C9BBB;">You are receiving this email because you submitted a job application to Digital GrowthScale.</td>
+                  </tr></table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+      </table>
+      <!--[if mso]></td></tr></table><![endif]-->
+
+    </td>
+  </tr>
+</table>
+</body>
+</html>

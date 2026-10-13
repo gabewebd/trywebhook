@@ -10,12 +10,19 @@
    DO NOT rename `netlifyFormName` values. They must match the <form name="…">
    in each page exactly, and they identify the form in the Netlify dashboard.
 
-   WEBHOOKS: none are connected yet. The browser never calls `webhook`;
-   these entries are for documentation and a future server-side function.
-   Do not put secret tokens in this file. It is public once deployed.
+   WEBHOOKS: when a role has `webhook.endpoint`, ../js/application.js posts a
+   JSON copy of the application to it AFTER Netlify Forms accepts the
+   submission. Leave `endpoint: null` to submit to Netlify only.
+   A GHL inbound-webhook URL is not a secret key, but anyone who reads this
+   file can post to it. Do not put API keys or tokens in this file. It is
+   public once deployed.
    ========================================================================== */
 (function (root) {
   'use strict';
+
+  // GoHighLevel inbound webhook used for TESTING. Every role points to it for now.
+  // To give a role its own workflow, replace that role's `webhook.endpoint` below.
+  var GHL_TEST_WEBHOOK = 'https://services.leadconnectorhq.com/hooks/UAA13luwQZmtw8ObS1Su/webhook-trigger/3505cc74-e748-48a9-bf08-6429c0806351';
 
   // Shared defaults. A role overrides only what differs from its original page.
   var DEFAULTS = {
@@ -25,7 +32,9 @@
     messages: {
       portfolioMissing: 'Please upload your portfolio or share a portfolio link. A portfolio is required for this role.',
       linkInvalid: 'Please enter a valid link that starts with https://',
-      sendFailed: 'Something went wrong while sending your application. Please try again, or email your resume to talent@digitalgrowthscale.com.'
+      sendFailed: 'Something went wrong while sending your application. Please try again, or email your resume to talent@digitalgrowthscale.com.',
+      // Netlify saved the application but the webhook failed. Retrying resends only the webhook.
+      webhookFailed: 'Your application was saved, but we could not finish sending it to our recruitment team. Please press Submit again to retry, or email your resume to talent@digitalgrowthscale.com.'
     }
   };
 
@@ -38,7 +47,7 @@
       netlifyFormName: 'architectural-bim-modeler-application',
       portfolioRequired: true,
       messages: { sendFailed: 'Something went wrong while sending your application. Please try again, or email your resume and portfolio to talent@digitalgrowthscale.com.' },
-      webhook: { status: 'not-configured', endpoint: null }
+      webhook: { status: 'testing', endpoint: GHL_TEST_WEBHOOK }
     },
     {
       slug: 'mechanical-electrical-bim-modeler',
@@ -48,7 +57,7 @@
       netlifyFormName: 'me-bim-modeler-application',
       portfolioRequired: true,
       messages: { sendFailed: 'Something went wrong while sending your application. Please try again, or email your resume and portfolio to talent@digitalgrowthscale.com.' },
-      webhook: { status: 'not-configured', endpoint: null }
+      webhook: { status: 'testing', endpoint: GHL_TEST_WEBHOOK }
     },
     {
       slug: 'structural-bim-modeler',
@@ -58,7 +67,7 @@
       netlifyFormName: 'structural-bim-modeler-application',
       portfolioRequired: true,
       messages: { sendFailed: 'Something went wrong while sending your application. Please try again, or email your resume and portfolio to talent@digitalgrowthscale.com.' },
-      webhook: { status: 'not-configured', endpoint: null }
+      webhook: { status: 'testing', endpoint: GHL_TEST_WEBHOOK }
     },
     {
       slug: 'facade-architectural-skilled-drafter',
@@ -72,7 +81,7 @@
         linkInvalid: 'Please enter a valid portfolio link that starts with https://',
         sendFailed: 'Something went wrong while sending your application. Please try again, or email your resume and portfolio to talent@digitalgrowthscale.com.'
       },
-      webhook: { status: 'not-configured', endpoint: null }
+      webhook: { status: 'testing', endpoint: GHL_TEST_WEBHOOK }
     },
     {
       slug: 'senior-it-support',
@@ -82,7 +91,7 @@
       netlifyFormName: 'senior-it-support-application',
       fileLimitsMB: { resume: 5 },
       messages: { linkInvalid: 'Please enter a valid LinkedIn link that starts with https://' },
-      webhook: { status: 'not-configured', endpoint: null }
+      webhook: { status: 'testing', endpoint: GHL_TEST_WEBHOOK }
     },
     {
       slug: 'microsoft-365-teams-specialist',
@@ -93,7 +102,7 @@
       fileLimitsMB: { resume: 5 },
       chipNoneHint: false,
       messages: { sendFailed: 'Something went wrong while sending your application. Please try again, or email your CV to talent@digitalgrowthscale.com.' },
-      webhook: { status: 'not-configured', endpoint: null }
+      webhook: { status: 'testing', endpoint: GHL_TEST_WEBHOOK }
     },
     {
       slug: 'accounts-administration-officer',
@@ -101,7 +110,7 @@
       path: '/careers/applications/accounts-administration-officer.html',
       originalUrl: 'https://acctsandadminofficer.netlify.app',
       netlifyFormName: 'accounts-admin-officer-application',
-      webhook: { status: 'not-configured', endpoint: null }
+      webhook: { status: 'testing', endpoint: GHL_TEST_WEBHOOK }
     }
   ];
 

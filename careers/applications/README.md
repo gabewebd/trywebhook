@@ -34,7 +34,7 @@ Each submission already carries the role: the hidden `form-name` (the form name)
 ## How submission works (Netlify Forms)
 
 - Each `<form>` has `data-netlify="true"` and `netlify-honeypot="bot-field"`. Netlify finds these forms when the site is deployed and then removes the attributes from the served HTML. The live pages no longer showed them, so they were added back here.
-- `application.js` validates the form, then sends a multipart `fetch` POST to the page's own path. The success panel appears only if Netlify returns 2xx. On failure the button is re-enabled and the role's error message is shown. A second submit is ignored while a request is in flight.
+- `application.js` validates the form, then sends a multipart `fetch` POST to the page's own path. Then, if the role has a webhook, it sends a JSON copy (see "GHL webhook" below). The success panel appears only if every step succeeds. On failure the button is re-enabled and the role's error message is shown. A second submit is ignored while a request is in flight.
 - Without JavaScript, the form posts normally and Netlify redirects to `action` (`/careers/applications/<slug>.html?applied=1`), which shows the success panel.
 
 ## Adding or changing a role
@@ -44,14 +44,21 @@ Each submission already carries the role: the hidden `form-name` (the form name)
 3. Add an entry to `config/application-roles.js`.
 4. Point the Careers card to `applications/<slug>.html`.
 
-## Connecting webhooks (next phase)
+## GHL webhook (testing)
 
-No webhook is connected. `application.js` never calls one, and every role has `webhook: { status: 'not-configured', endpoint: null }`.
+Every role currently posts to the GHL test webhook (`GHL_TEST_WEBHOOK` in `config/application-roles.js`). Set a role's `webhook.endpoint` to `null` to turn it off, or to a different URL to give that role its own workflow.
 
-Send to webhooks **from the server, after Netlify accepts the submission**, not from the browser. If the browser sent twice (Netlify plus webhook), one copy could succeed while the other fails, and the webhook URL would be public.
+How a submission works:
+1. `application.js` validates the form.
+2. It POSTs the form (multipart, with files) to Netlify Forms. If this fails, the applicant sees the original error.
+3. It POSTs a flat JSON copy of the answers to the role's webhook. GHL allows browser requests (`Access-Control-Allow-Origin: *`).
+4. The success panel appears only after both succeed. If only the webhook failed, pressing Submit again resends just the webhook, with the same payload, so Netlify does not get a duplicate.
 
-**Option A, recommended (no code):** In the Netlify dashboard, go to Site configuration → Notifications → Form submission notifications → Add notification → **Outgoing webhook**. Choose the event *New form submission*, pick **one form** (for example `senior-it-support-application`), and paste that role's webhook URL. Repeat for each of the 7 forms. It fires only for verified, non-spam submissions. Then update the role's `webhook.status` in the config to record it.
+Payload: one key per form field name (e.g. `first-name`, `position`, `years-bim`). Checkbox groups drop the `[]` suffix and join ticked values with ", ". Unticked or empty fields are sent as `""`. Added keys: `submission-id` (also stored in Netlify), `role-slug`, `submitted-at`, `page-url`, and for each file input `<name>-type` and `<name>-size-kb`. The honeypot is never sent, and entries where the honeypot is filled skip the webhook.
 
-**Option B (custom routing or payload shaping):** Add a Netlify Function named `submission-created`. Netlify runs it after every verified submission. It can `require('../../careers/applications/config/application-roles.js')` and use `byFormName(payload.form_name)` to find the role. Keep each URL in a Netlify environment variable (for example `WEBHOOK_SENIOR_IT_SUPPORT`), never in this repo. This needs a CLI or Git deploy, because drag-and-drop deploys do not run functions.
+Resumes: GHL receives the **file name, type and size only**. The file itself is stored in Netlify Forms. To find it, search the Netlify submission by `submission-id`. GHL cannot read the resume's contents from this payload.
 
-Uploaded files reach webhooks as Netlify file links, not as attachments. Check that the receiving system (such as GoHighLevel) can open them.
+Limits of the browser-side approach:
+- The webhook URL is visible in page source, so anyone could post fake entries to it. It is not an API key, but for production consider moving it to a Netlify Function and environment variable.
+- The no-JavaScript fallback posts to Netlify only.
+- To give GHL a link to the resume file, use a server-side `submission-created` Netlify Function. It receives Netlify's stored submission, including upload links.

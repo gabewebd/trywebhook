@@ -5,7 +5,8 @@
    ../config/application-roles.js, keyed by <body data-role="…">.
 
    Submission goes to Netlify Forms exactly as before (multipart POST with
-   the hidden form-name field). This script never calls a webhook.
+   the hidden form-name field). If the role has `webhook.endpoint` in the
+   config, a JSON copy of the answers is then posted to that webhook.
    ========================================================================== */
 (function(){
   var form=document.getElementById('appForm'),
@@ -82,18 +83,80 @@
     if(pl&&pl.value.trim()&&!/^https?:\/\/\S+\.\S+/.test(pl.value.trim())){return fail(MSG.linkInvalid,pl);}
 
     sending=true;btn.disabled=true;btn.textContent='Submitting…';
-    // Post to this page's own path. Netlify Forms accepts the POST on any static page;
-    // the form is identified by the hidden "form-name" field, not by the URL.
-    fetch(location.pathname,{method:'POST',body:new FormData(form)})
-      .then(function(r){if(!r.ok)throw new Error(r.status);
+    // Step 1: Netlify Forms stores the application and the uploaded files.
+    // Step 2: if the role has a webhook, send a JSON copy of the same answers.
+    // Success shows only when every step succeeds. If only the webhook failed,
+    // a retry resends just the webhook (the saved payload), not a second Netlify entry.
+    var step=netlifyDone?Promise.resolve():postNetlify();
+    step.then(function(){return webhookPayload?postWebhook(webhookPayload):null;})
+      .then(function(){
         form.style.display='none';ok.classList.add('show');
         ok.scrollIntoView({behavior:'smooth',block:'center'});
       })
       .catch(function(){
         sending=false;btn.disabled=false;btn.innerHTML=submitLabel;
-        fail(MSG.sendFailed);
+        fail(netlifyDone?MSG.webhookFailed:MSG.sendFailed);
       });
   });
+
+  var netlifyDone=false,webhookPayload=null,
+      webhookUrl=role.webhook&&role.webhook.endpoint;
+
+  function postNetlify(){
+    var sid=document.getElementById('submissionId');
+    if(sid&&!sid.value)sid.value=newId();
+    // Post to this page's own path. Netlify Forms accepts the POST on any static page;
+    // the form is identified by the hidden "form-name" field, not by the URL.
+    return fetch(location.pathname,{method:'POST',body:new FormData(form)})
+      .then(function(r){
+        if(!r.ok)throw new Error(r.status);
+        netlifyDone=true;
+        // Netlify quietly accepts honeypot (spam) entries; never forward those.
+        var bot=form.querySelector('[name="bot-field"]');
+        if(webhookUrl&&!(bot&&bot.value))webhookPayload=buildPayload();
+      });
+  }
+
+  function postWebhook(payload){
+    var ctrl='AbortController' in window?new AbortController():null,
+        t=ctrl&&setTimeout(function(){ctrl.abort();},15000);
+    return fetch(webhookUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),signal:ctrl&&ctrl.signal})
+      .then(function(r){clearTimeout(t);if(!r.ok)throw new Error(r.status);},function(e){clearTimeout(t);throw e;});
+  }
+
+  // Flat JSON of every named field in this form, so each role's own questions come through.
+  // Keys keep the form's field names; checkbox groups drop the trailing "[]" and join the
+  // ticked values with ", ". Unticked or empty fields are sent as "" so the keys stay the same
+  // on every submission. File inputs send the file's name, type and size only: the file itself
+  // is stored by Netlify Forms, and this browser request cannot include or link to it.
+  function buildPayload(){
+    var p={},groups={};
+    Array.prototype.forEach.call(form.elements,function(el){
+      var n=el.name;
+      if(!n||n==='bot-field'||el.type==='submit'||el.type==='button')return;
+      var key=n.replace(/\[\]$/,'');
+      if(el.type==='file'){
+        var f=el.files[0];
+        p[key]=f?f.name:'';p[key+'-type']=f?(f.type||''):'';p[key+'-size-kb']=f?Math.round(f.size/1024):'';
+      }else if(el.type==='checkbox'&&key!==n){
+        (groups[key]=groups[key]||[]);if(el.checked)groups[key].push(el.value);
+      }else if(el.type==='checkbox'||el.type==='radio'){
+        if(!(key in p))p[key]='';if(el.checked)p[key]=el.value;
+      }else{
+        p[key]=(el.value||'').trim();
+      }
+    });
+    for(var g in groups)p[g]=groups[g].join(', ');
+    p['role-slug']=slug;
+    p['submitted-at']=new Date().toISOString();
+    p['page-url']=location.origin+location.pathname;
+    return p;
+  }
+
+  function newId(){
+    if(window.crypto&&crypto.randomUUID)return crypto.randomUUID();
+    return Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10);
+  }
 
   // hide the floating mobile button while the form is on screen
   var cta=document.getElementById('mobileCta'),sec=document.getElementById('apply');
